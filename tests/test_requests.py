@@ -181,6 +181,11 @@ class TestRequests:
         ).prepare()
         assert request.url == "http://example.com/?test=foo"
 
+    @pytest.mark.parametrize("params", (5, 3.14, True, object()))
+    def test_invalid_params_type_has_a_clear_error(self, params):
+        with pytest.raises(TypeError, match="^params must be .+ not"):
+            requests.Request("GET", "http://example.com", params=params).prepare()
+
     def test_binary_put(self):
         request = requests.Request(
             "PUT", "http://example.com", data="ööö".encode()
