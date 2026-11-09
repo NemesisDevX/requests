@@ -545,6 +545,17 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
         if not path:
             path = "/"
 
+        if not (
+            params is None
+            or isinstance(params, (str, bytes))
+            or _t.has_read(params)
+            or hasattr(params, "__iter__")
+        ):
+            raise TypeError(
+                "params must be a mapping, an iterable of tuples, str, bytes, "
+                f"or a readable object, not {type(params).__name__}"
+            )
+
         if isinstance(params, (str, bytes)):
             params = to_native_string(params)
 
